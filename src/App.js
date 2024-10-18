@@ -1,23 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import axios from 'axios';
+import CategorySearch from './components/CategorySearch';
+import PlaceCard from './components/PlaceCard';
 
 function App() {
+  const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchPlaces = async (address, category) => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`http://localhost:8080/nearby-places`, {
+        params: {
+          address: address,
+          category: category
+        }
+      });
+      setPlaces(response.data);
+    } catch (error) {
+      console.error("Error fetching places", error);
+    }
+    setLoading(false);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Nearby Places Finder</h1>
+      <CategorySearch fetchPlaces={fetchPlaces} />
+      {loading ? <p>Loading...</p> : null}
+      <div className="places-list">
+        {places.map((place, index) => (
+          <PlaceCard key={index} place={place} />
+        ))}
+      </div>
     </div>
   );
 }
