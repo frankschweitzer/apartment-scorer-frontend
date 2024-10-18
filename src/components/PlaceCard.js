@@ -4,7 +4,7 @@ function PlaceCard({ place }) {
     return (
         <div className="place-card">
             <h2>{place.name}</h2>
-            <p>{place.address}</p>
+            <p>{place.formatted}</p>
             <p>Rating: {place.rating}</p>
         </div>
     );
